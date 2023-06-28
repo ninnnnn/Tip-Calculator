@@ -13,7 +13,7 @@ extension Calculator.Models {
     enum Tip {
         case none
         case tenPercent
-        case fifthteenPercent
+        case fifteenPercent
         case twentyPercent
         case custom(value: Int)
         
@@ -23,7 +23,7 @@ extension Calculator.Models {
                 return ""
             case .tenPercent:
                 return "10%"
-            case .fifthteenPercent:
+            case .fifteenPercent:
                 return "15%"
             case .twentyPercent:
                 return "20%"

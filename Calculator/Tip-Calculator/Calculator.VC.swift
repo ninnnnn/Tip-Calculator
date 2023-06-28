@@ -34,9 +34,9 @@ private extension Calculator.VC {
     
     func setupBinding() {
         let input = Calculator.VM.Input(
-            billPublisher: Just(10).eraseToAnyPublisher(),
-            tipPublisher: Just(.fifthteenPercent).eraseToAnyPublisher(),
-            splitPublisher: Just(5).eraseToAnyPublisher()
+            billPublisher: vo.billInputView.valuePublisher,
+            tipPublisher: vo.tipView.valuePublisher,
+            splitPublisher: vo.splitView.valuePublisher
         )
         
         let output = vm.doAction(input: input)

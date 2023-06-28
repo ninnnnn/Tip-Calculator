@@ -5,25 +5,63 @@
 //  Created by user on 2023/6/26.
 //
 
+import Combine
+import CombineCocoa
 import UIKit
 
 extension Calculator.Views {
     final class TipView: UIView {
         lazy var titleView = makeTitleView()
         lazy var button1 = makeButton(tip: .tenPercent)
-        lazy var button2 = makeButton(tip: .fifthteenPercent)
+        lazy var button2 = makeButton(tip: .fifteenPercent)
         lazy var button3 = makeButton(tip: .twentyPercent)
         lazy var button4 = makeButton(tip: .custom(value: 0))
+        
+        private var binding = Set<AnyCancellable>()
+        
+        private let tipSubject: CurrentValueSubject<Calculator.Models.Tip, Never> = .init(.none)
+        var valuePublisher: AnyPublisher<Calculator.Models.Tip, Never> {
+            return tipSubject.eraseToAnyPublisher()
+        }
         
         override init(frame: CGRect) {
             super.init(frame: frame)
             addTitleView()
             addTipView()
+            
+            observe()
         }
         
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
+    }
+}
+
+// MARK: - Oserve Something
+
+private extension Calculator.Views.TipView {
+    func observe() {
+        tipSubject.sink(receiveValue: { [unowned self] tip in
+            handleResetView()
+            switch tip {
+            case .none: break
+            case .tenPercent:
+                button1.backgroundColor = ThemeColor.secondary
+            case .fifteenPercent:
+                button2.backgroundColor = ThemeColor.secondary
+            case .twentyPercent:
+                button3.backgroundColor = ThemeColor.secondary
+            case let .custom(value):
+                button4.backgroundColor = ThemeColor.secondary
+                button4.setAttributedTitle(
+                    "\(value)%"
+                        .richText(font: .systemFont(ofSize: 20, weight: .init(1)), color: .white)
+                        .font(.systemFont(ofSize: 14, weight: .init(0.5)), for: "%"),
+                    for: .normal)
+            }
+        })
+        .store(in: &binding)
     }
 }
 
@@ -47,6 +85,64 @@ private extension Calculator.Views.TipView {
             make.trailing.equalToSuperview().offset(-24)
             make.bottom.equalToSuperview()
         }
+    }
+}
+
+// MARK: - Handle Something
+
+private extension Calculator.Views.TipView {
+    func handleTipButton(tip: Calculator.Models.Tip, button: UIButton) {
+        switch tip {
+        case .none:
+            break
+        case .custom:
+            button.tapPublisher
+                .sink(receiveValue: { [weak self] _ in
+                    self?.handleCustomTip()
+                })
+                .store(in: &binding)
+        default:
+            button.tapPublisher
+                .flatMap({ Just(tip) })
+                .assign(to: \.value, on: tipSubject)
+                .store(in: &binding)
+        }
+    }
+    
+    func handleCustomTip() {
+        let alertController: UIAlertController = {
+            let result = UIAlertController(
+                title: "Enter custom tip",
+                message: nil,
+                preferredStyle: .alert
+            )
+            result.addTextField { textField in
+                textField.placeholder = "Make it generous!"
+                textField.keyboardType = .decimalPad
+                textField.autocorrectionType = .no
+            }
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+            let confirmAction = UIAlertAction(title: "OK", style: .default) { [weak self] _ in
+                guard let text = result.textFields?.first?.text,
+                        let value = Int(text) else {
+                    return
+                }
+                self?.tipSubject.send(.custom(value: value))
+            }
+            [cancelAction, confirmAction].forEach(result.addAction(_:))
+            return result
+        }()
+        
+        parentController?.present(alertController, animated: true)
+    }
+    
+    func handleResetView() {
+        [button1, button2, button3, button4].forEach({ $0.backgroundColor = ThemeColor.primary })
+        button4.setAttributedTitle(
+            "Custom tip"
+                .richText(font: .systemFont(ofSize: 20, weight: .init(1)), color: .white)
+                .font(.systemFont(ofSize: 14, weight: .init(0.5)), for: "%"),
+            for: .normal)
     }
 }
 
@@ -127,6 +223,8 @@ private extension Calculator.Views.TipView {
                     .font(.systemFont(ofSize: 14, weight: .init(0.5)), for: "%"),
                 for: .normal)
         }
+        
+        handleTipButton(tip: tip, button: result)
         
         return result
     }

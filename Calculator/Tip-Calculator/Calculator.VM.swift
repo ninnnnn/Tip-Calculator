@@ -5,6 +5,7 @@ import Combine
 
 extension Calculator {
     final class VM {
+        var binding: Set<AnyCancellable> = .init()
         
         struct Input {
             let billPublisher: AnyPublisher<Double, Never>

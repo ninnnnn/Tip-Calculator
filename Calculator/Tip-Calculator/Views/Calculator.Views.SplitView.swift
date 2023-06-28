@@ -5,19 +5,30 @@
 //  Created by user on 2023/6/26.
 //
 
+import Combine
+import CombineCocoa
 import UIKit
 
 extension Calculator.Views {
     final class SplitView: UIView {
         lazy var titleView = makeTitleView()
-        lazy var decrementButton = makeButton(title: "+", corners: [.layerMinXMinYCorner, .layerMinXMaxYCorner])
-        lazy var incrementButton = makeButton(title: "-", corners: [.layerMaxXMinYCorner, .layerMaxXMaxYCorner])
+        lazy var incrementButton = makeButton(title: "+", corners: [.layerMaxXMinYCorner, .layerMaxXMaxYCorner])
+        lazy var decrementButton = makeButton(title: "-", corners: [.layerMinXMinYCorner, .layerMinXMaxYCorner])
         lazy var quantityLabel = makeLabel()
+        
+        private var binding = Set<AnyCancellable>()
+        
+        private let splitSubject: CurrentValueSubject<Int, Never> = .init(1)
+        var valuePublisher: AnyPublisher<Int, Never> {
+            return splitSubject.removeDuplicates().eraseToAnyPublisher()
+        }
         
         override init(frame: CGRect) {
             super.init(frame: frame)
             addTitleView()
             addQuantityView()
+            
+            observe()
         }
         
         required init?(coder: NSCoder) {
@@ -52,6 +63,31 @@ private extension Calculator.Views.SplitView {
             make.leading.equalTo(titleView.snp.trailing).offset(16)
             make.trailing.equalToSuperview().offset(-24)
         }
+    }
+}
+
+// MARK: - Handle Something
+
+private extension Calculator.Views.SplitView {
+    func observe() {
+        incrementButton.tapPublisher
+            .flatMap({ [unowned self] _ in
+                Just(splitSubject.value + 1)
+            })
+            .assign(to: \.value, on: splitSubject)
+            .store(in: &binding)
+        
+        decrementButton.tapPublisher
+            .flatMap({ [unowned self] _ in
+                Just(splitSubject.value == 1 ? 1 : splitSubject.value - 1)
+            })
+            .assign(to: \.value, on: splitSubject)
+            .store(in: &binding)
+        
+        splitSubject.sink { [unowned self] quantity in
+            quantityLabel.text = quantity.stringValue
+        }
+        .store(in: &binding)
     }
 }
 

@@ -13,3 +13,9 @@ extension String {
         NSAttributedString(string: self).font(font).color(color)
     }
 }
+
+extension String {
+    var doubleValue: Double? {
+        Double(self)
+    }
+}

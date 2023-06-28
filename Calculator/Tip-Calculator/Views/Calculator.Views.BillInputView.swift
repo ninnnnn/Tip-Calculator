@@ -5,6 +5,7 @@
 //  Created by user on 2023/6/26.
 //
 
+import Combine
 import CombineCocoa
 import UIKit
 
@@ -13,17 +14,36 @@ extension Calculator.Views {
         lazy var titleView = makeTitleView()
         lazy var textField = makeTextField()
         
-        var didTapDone: (() -> ())?
+        private var binding = Set<AnyCancellable>()
+        
+        private let billSubject: PassthroughSubject<Double, Never> = .init()
+        var valuePublisher: AnyPublisher<Double, Never> {
+            return billSubject.eraseToAnyPublisher()
+        }
         
         override init(frame: CGRect) {
             super.init(frame: frame)
             addTitleView()
             addInputView()
+            
+            observe()
         }
         
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
+    }
+}
+
+// MARK: - Oserve Something
+
+private extension Calculator.Views.BillInputView {
+    func observe() {
+        textField.textPublisher
+            .sink { [unowned self] text in
+                billSubject.send(text?.doubleValue ?? 0)
+            }
+            .store(in: &binding)
     }
 }
 
@@ -126,6 +146,5 @@ private extension Calculator.Views.BillInputView {
 private extension Calculator.Views.BillInputView {
     @objc func tapDone() {
         textField.endEditing(true)
-        didTapDone?()
     }
 }
