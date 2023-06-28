@@ -14,7 +14,6 @@ extension Calculator {
             super.viewDidLoad()
             setupSelf()
             setupBinding()
-            setupVO()
         }
     }
 }
@@ -40,40 +39,8 @@ private extension Calculator.VC {
         )
         
         let output = vm.doAction(input: input)
-        output.updateViewPublisher.sink { result in
-            print(">>>>>> \(result)")
+        output.updateViewPublisher.sink { [unowned self] result in
+            vo.resultView.reloadUI(result: result)
         }.store(in: &binding)
     }
-    
-    func setupVO() {
-        vo.resultView.reloadUI()
-        vo.tipView.button1.addTarget(self, action: #selector(tapButton1), for: .touchUpInside)
-        vo.tipView.button2.addTarget(self, action: #selector(tapButton2), for: .touchUpInside)
-        vo.tipView.button3.addTarget(self, action: #selector(tapButton3), for: .touchUpInside)
-        vo.tipView.button4.addTarget(self, action: #selector(tapButton4), for: .touchUpInside)
-        vo.splitView.decrementButton.addTarget(self, action: #selector(tapDecrementButton), for: .touchUpInside)
-        vo.splitView.incrementButton.addTarget(self, action: #selector(tapIncrementButton), for: .touchUpInside)
-    }
-}
-
-// MARK: - Handle Action
-
-private extension Calculator.VC {
-    func stateNone() {}
-}
-
-// MARK: - Target Action
-
-private extension Calculator.VC {
-    @objc func tapButton1() {}
-    
-    @objc func tapButton2() {}
-    
-    @objc func tapButton3() {}
-    
-    @objc func tapButton4() {}
-    
-    @objc func tapDecrementButton() {}
-    
-    @objc func tapIncrementButton() {}
 }

@@ -21,6 +21,8 @@ extension Calculator.Views {
             addTotalView()
             addLine()
             addBottomView()
+            
+            setDefault()
         }
         
         required init?(coder: NSCoder) {
@@ -32,14 +34,26 @@ extension Calculator.Views {
 // MARK: - Update Something
 
 extension Calculator.Views.ResultView {
-    func reloadUI() {
-        totalLabel.attributedText = "$000"
+    func setDefault() {
+        totalLabel.attributedText = "$0"
             .richText(font: .systemFont(ofSize: 48, weight: .init(1)), color: ThemeColor.text)
             .font(.systemFont(ofSize: 24, weight: .init(1)), for: "$")
-        totalBill.attributedText = "$000"
+        totalBill.attributedText = "$0"
             .richText(font: .systemFont(ofSize: 24, weight: .init(1)), color: ThemeColor.primary)
             .font(.systemFont(ofSize: 16, weight: .init(1)), for: "$")
-        totalTip.attributedText = "$000"
+        totalTip.attributedText = "$0"
+            .richText(font: .systemFont(ofSize: 24, weight: .init(1)), color: ThemeColor.primary)
+            .font(.systemFont(ofSize: 16, weight: .init(1)), for: "$")
+    }
+    
+    func reloadUI(result: Calculator.Models.Result) {
+        totalLabel.attributedText = result.totalPerPerson.currencyFormatted
+            .richText(font: .systemFont(ofSize: 48, weight: .init(1)), color: ThemeColor.text)
+            .font(.systemFont(ofSize: 24, weight: .init(1)), for: "$")
+        totalBill.attributedText = result.totalBill.currencyFormatted
+            .richText(font: .systemFont(ofSize: 24, weight: .init(1)), color: ThemeColor.primary)
+            .font(.systemFont(ofSize: 16, weight: .init(1)), for: "$")
+        totalTip.attributedText = result.totalTip.currencyFormatted
             .richText(font: .systemFont(ofSize: 24, weight: .init(1)), color: ThemeColor.primary)
             .font(.systemFont(ofSize: 16, weight: .init(1)), for: "$")
     }
