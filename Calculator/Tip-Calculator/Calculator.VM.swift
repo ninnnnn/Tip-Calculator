@@ -73,7 +73,7 @@ private extension Calculator.VM {
         case .twentyPercent:
             return bill * 0.2
         case let .custom(value):
-            return bill * Double(value) / 100
+            return Double(value)
         }
     }
 }

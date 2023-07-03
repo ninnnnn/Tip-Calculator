@@ -5,32 +5,107 @@
 //  Created by user on 2023/6/26.
 //
 
+import Combine
 import XCTest
 @testable import Calculator
 
 final class CalculatorTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    // sut -> System under test
+    private var sut: Calculator.VM!
+    private var cancellables: Set<AnyCancellable>!
+    
+    private let logoViewSubject = PassthroughSubject<Void, Never>()
+    
+    override func setUp() {
+        sut = .init()
+        cancellables = .init()
+        super.setUp()
     }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    
+    override func tearDown() {
+        super.tearDown()
+        sut = nil
+        cancellables = nil
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    
+    func testResultWithoutTipForOnePerson() {
+        // given
+        let bill: Double = 100
+        let tip: Calculator.Models.Tip = .none
+        let split: Int = 1
+        
+        // when
+        let output = sut.doAction(input: buildInput(bill: bill, tip: tip, split: split))
+        
+        // then
+        output.updateViewPublisher.sink { result in
+            XCTAssertEqual(result.totalPerPerson, 100)
+            XCTAssertEqual(result.totalBill, 100)
+            XCTAssertEqual(result.totalTip, 0)
         }
+        .store(in: &cancellables)
     }
-
+    
+    func testResultWithoutTipForTwoPerson() {
+        // given
+        let bill: Double = 100
+        let tip: Calculator.Models.Tip = .none
+        let split: Int = 2
+        
+        // when
+        let output = sut.doAction(input: buildInput(bill: bill, tip: tip, split: split))
+        
+        // then
+        output.updateViewPublisher.sink { result in
+            XCTAssertEqual(result.totalPerPerson, 50)
+            XCTAssertEqual(result.totalBill, 100)
+            XCTAssertEqual(result.totalTip, 0)
+        }
+        .store(in: &cancellables)
+    }
+    
+    func testResultWithTenTipForTwoPerson() {
+        // given
+        let bill: Double = 100
+        let tip: Calculator.Models.Tip = .tenPercent
+        let split: Int = 2
+        
+        // when
+        let output = sut.doAction(input: buildInput(bill: bill, tip: tip, split: split))
+        
+        // then
+        output.updateViewPublisher.sink { result in
+            XCTAssertEqual(result.totalPerPerson, 55)
+            XCTAssertEqual(result.totalBill, 110)
+            XCTAssertEqual(result.totalTip, 10)
+        }
+        .store(in: &cancellables)
+    }
+    
+    func testResultWithCustomTipForFourPerson() {
+        // given
+        let bill: Double = 200
+        let tip: Calculator.Models.Tip = .custom(value: 201)
+        let split: Int = 4
+        
+        // when
+        let output = sut.doAction(input: buildInput(bill: bill, tip: tip, split: split))
+        
+        // then
+        output.updateViewPublisher.sink { result in
+            XCTAssertEqual(result.totalPerPerson, 100.25)
+            XCTAssertEqual(result.totalBill, 401)
+            XCTAssertEqual(result.totalTip, 201)
+        }
+        .store(in: &cancellables)
+    }
+    
+    private func buildInput(bill: Double, tip: Calculator.Models.Tip, split: Int) -> Calculator.VM.Input {
+        .init(
+            billPublisher: Just(bill).eraseToAnyPublisher(),
+            tipPublisher: Just(tip).eraseToAnyPublisher(),
+            splitPublisher: Just(split).eraseToAnyPublisher(),
+            logoViewTapPublisher: logoViewSubject.eraseToAnyPublisher()
+        )
+    }
 }
