@@ -38,6 +38,14 @@ extension Calculator.Views {
     }
 }
 
+// MARK: - Update Something
+
+extension Calculator.Views.TipView {
+    func reset() {
+        tipSubject.send(.none)
+    }
+}
+
 // MARK: - Oserve Something
 
 private extension Calculator.Views.TipView {

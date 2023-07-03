@@ -35,6 +35,15 @@ extension Calculator.Views {
     }
 }
 
+// MARK: - Update Something
+
+extension Calculator.Views.BillInputView {
+    func reset() {
+        textField.text = nil
+        billSubject.send(0)
+    }
+}
+
 // MARK: - Oserve Something
 
 private extension Calculator.Views.BillInputView {

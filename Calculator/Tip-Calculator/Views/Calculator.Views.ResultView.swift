@@ -38,12 +38,6 @@ extension Calculator.Views.ResultView {
         totalLabel.attributedText = "$0"
             .richText(font: .systemFont(ofSize: 48, weight: .init(1)), color: ThemeColor.text)
             .font(.systemFont(ofSize: 24, weight: .init(1)), for: "$")
-        totalBill.attributedText = "$0"
-            .richText(font: .systemFont(ofSize: 24, weight: .init(1)), color: ThemeColor.primary)
-            .font(.systemFont(ofSize: 16, weight: .init(1)), for: "$")
-        totalTip.attributedText = "$0"
-            .richText(font: .systemFont(ofSize: 24, weight: .init(1)), color: ThemeColor.primary)
-            .font(.systemFont(ofSize: 16, weight: .init(1)), for: "$")
     }
     
     func reloadUI(result: Calculator.Models.Result) {
@@ -147,6 +141,9 @@ private extension Calculator.Views.ResultView {
     
     func makeLabel() -> UILabel {
         let result = UILabel()
+        result.attributedText = "$0"
+            .richText(font: .systemFont(ofSize: 24, weight: .init(1)), color: ThemeColor.primary)
+            .font(.systemFont(ofSize: 16, weight: .init(1)), for: "$")
         return result
     }
     

@@ -5,16 +5,23 @@ import Combine
 
 extension Calculator {
     final class VM {
-        var binding: Set<AnyCancellable> = .init()
-        
         struct Input {
             let billPublisher: AnyPublisher<Double, Never>
             let tipPublisher: AnyPublisher<Calculator.Models.Tip, Never>
             let splitPublisher: AnyPublisher<Int, Never>
+            let logoViewTapPublisher: AnyPublisher<Void, Never>
         }
         
         struct Output {
             let updateViewPublisher: AnyPublisher<Calculator.Models.Result, Never>
+            let resetPublisher: AnyPublisher<Void, Never>
+        }
+        
+        private var binding: Set<AnyCancellable> = .init()
+        private var audioPlayerService: AudioPlayerService
+        
+        init(audioPlayerService: AudioPlayerService = AudioPlayer()) {
+            self.audioPlayerService = audioPlayerService
         }
         
         func doAction(input: Input) -> Output {
@@ -36,7 +43,18 @@ extension Calculator {
                     return Just(result)
                 }.eraseToAnyPublisher()
             
-            return Output(updateViewPublisher: updatePublisher)
+            let resetPublisher = input.logoViewTapPublisher
+                .handleEvents(receiveOutput: { [unowned self] in
+                    audioPlayerService.playSound()
+                })
+                .flatMap({ Just($0) })
+                .eraseToAnyPublisher()
+
+            
+            return Output(
+                updateViewPublisher: updatePublisher,
+                resetPublisher: resetPublisher
+            )
         }
     }
 }

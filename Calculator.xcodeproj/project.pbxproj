@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE20921A2A4EBA0A00725A46 /* click.m4a in Resources */ = {isa = PBXBuildFile; fileRef = CE2092192A4EBA0A00725A46 /* click.m4a */; };
+		CE20921D2A4EBA6400725A46 /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE20921C2A4EBA6400725A46 /* AudioPlayerService.swift */; };
 		CE8BB1252A4C18A1003F3C04 /* UIResponder+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8BB1242A4C18A1003F3C04 /* UIResponder+Extension.swift */; };
 		CE8BB1272A4C2B3A003F3C04 /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8BB1262A4C2B3A003F3C04 /* Int+Extension.swift */; };
 		CE8BB1292A4C3900003F3C04 /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8BB1282A4C3900003F3C04 /* Double+Extension.swift */; };
@@ -57,6 +59,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CE2092192A4EBA0A00725A46 /* click.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = click.m4a; sourceTree = "<group>"; };
+		CE20921C2A4EBA6400725A46 /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
 		CE8BB1242A4C18A1003F3C04 /* UIResponder+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIResponder+Extension.swift"; sourceTree = "<group>"; };
 		CE8BB1262A4C2B3A003F3C04 /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
 		CE8BB1282A4C3900003F3C04 /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
@@ -118,6 +122,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CE2092182A4EB9FD00725A46 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				CE9CA4822A4964F600AECD10 /* Assets.xcassets */,
+				CE2092192A4EBA0A00725A46 /* click.m4a */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
+		CE20921B2A4EBA4B00725A46 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				CE20921C2A4EBA6400725A46 /* AudioPlayerService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
 		CE9CA46D2A4964F400AECD10 = {
 			isa = PBXGroup;
 			children = (
@@ -142,14 +163,15 @@
 		CE9CA4782A4964F400AECD10 /* Calculator */ = {
 			isa = PBXGroup;
 			children = (
+				CE9CA4792A4964F400AECD10 /* AppDelegate.swift */,
+				CE9CA47B2A4964F400AECD10 /* SceneDelegate.swift */,
+				CE9CA4842A4964F600AECD10 /* LaunchScreen.storyboard */,
+				CE9CA4872A4964F600AECD10 /* Info.plist */,
+				CE20921B2A4EBA4B00725A46 /* Service */,
+				CE2092182A4EB9FD00725A46 /* Resource */,
 				CE9CA4DD2A49803300AECD10 /* Tip-Calculator */,
 				CE9CA4DC2A49802500AECD10 /* Extension */,
 				CE9CA4DB2A49801A00AECD10 /* Config */,
-				CE9CA4792A4964F400AECD10 /* AppDelegate.swift */,
-				CE9CA47B2A4964F400AECD10 /* SceneDelegate.swift */,
-				CE9CA4822A4964F600AECD10 /* Assets.xcassets */,
-				CE9CA4842A4964F600AECD10 /* LaunchScreen.storyboard */,
-				CE9CA4872A4964F600AECD10 /* Info.plist */,
 			);
 			path = Calculator;
 			sourceTree = "<group>";
@@ -349,6 +371,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE20921A2A4EBA0A00725A46 /* click.m4a in Resources */,
 				CE9CA4862A4964F600AECD10 /* LaunchScreen.storyboard in Resources */,
 				CE9CA4832A4964F600AECD10 /* Assets.xcassets in Resources */,
 			);
@@ -472,6 +495,7 @@
 				CE8BB1292A4C3900003F3C04 /* Double+Extension.swift in Sources */,
 				CE9CA4BD2A49740500AECD10 /* Calculator.Views.swift in Sources */,
 				CE9CA4E52A49914D00AECD10 /* NSAttributeString+Extension.swift in Sources */,
+				CE20921D2A4EBA6400725A46 /* AudioPlayerService.swift in Sources */,
 				CE9CA4E32A49911C00AECD10 /* String+Extension.swift in Sources */,
 				CE9CA4BF2A49740500AECD10 /* Calculator.Models.swift in Sources */,
 				CE9CA4DF2A49805C00AECD10 /* UIColor+Extension.swift in Sources */,

@@ -37,6 +37,14 @@ extension Calculator.Views {
     }
 }
 
+// MARK: - Update Something
+
+extension Calculator.Views.SplitView {
+    func reset() {
+        splitSubject.send(1)
+    }
+}
+
 // MARK: - Add Something
 
 private extension Calculator.Views.SplitView {
